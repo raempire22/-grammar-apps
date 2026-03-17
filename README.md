@@ -1,2 +1,1 @@
-# -grammar-apps
- My Grammar Learning Apps
+<meta http-equiv="refresh" content="0; url=index.html">
