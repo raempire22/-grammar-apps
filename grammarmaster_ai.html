@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrammarMaster AI 🎮</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0f0f1a;
+    --card: #1a1a2e;
+    --card2: #16213e;
+    --accent: #e94560;
+    --gold: #ffd700;
+    --cyan: #00d4ff;
+    --green: #00ff88;
+    --purple: #a855f7;
+    --text: #e8e8f0;
+    --muted: #888aaa;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(168,85,247,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(0,212,255,0.06) 0%, transparent 50%);
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(233,69,96,0.2);
+  }
+
+  .logo {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+  }
+
+  .stats-bar {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .stat-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .stat-chip.xp { color: var(--gold); border-color: rgba(255,215,0,0.3); }
+  .stat-chip.streak { color: #ff8c42; border-color: rgba(255,140,66,0.3); }
+  .stat-chip.level { color: var(--cyan); border-color: rgba(0,212,255,0.3); }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 100px;
+  }
+
+  /* CHAT AREA */
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 400px;
+  }
+
+  .message {
+    display: flex;
+    gap: 12px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .message.user { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    font-weight: 800;
+  }
+
+  .avatar.ai {
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    box-shadow: 0 0 15px rgba(233,69,96,0.4);
+  }
+
+  .avatar.user-av {
+    background: linear-gradient(135deg, var(--cyan), var(--green));
+    color: #0f0f1a;
+    box-shadow: 0 0 15px rgba(0,212,255,0.4);
+  }
+
+  .bubble {
+    max-width: 78%;
+    border-radius: 18px;
+    padding: 14px 18px;
+    line-height: 1.6;
+    font-size: 0.92rem;
+  }
+
+  .message.ai .bubble {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top-left-radius: 4px;
+  }
+
+  .message.user .bubble {
+    background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+    border-top-right-radius: 4px;
+    color: #fff;
+  }
+
+  .bubble h3 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--cyan);
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .bubble ul { padding-left: 18px; margin: 6px 0; }
+  .bubble li { margin: 4px 0; }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .menu-btn {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.83rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .menu-btn:hover {
+    background: rgba(233,69,96,0.15);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(233,69,96,0.2);
+  }
+
+  .menu-btn .num {
+    background: var(--accent);
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  /* XP BURST */
+  .xp-burst {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold), #ff8c00);
+    color: #000;
+    font-weight: 900;
+    font-size: 0.78rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 8px;
+    animation: burst 0.5s ease;
+  }
+
+  @keyframes burst {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.3); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    margin: 8px 0;
+  }
+
+  .progress-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    border-radius: 10px;
+    transition: width 0.8s ease;
+  }
+
+  /* QUICK ACTION PILLS */
+  .quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .quick-pill {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--cyan);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quick-pill:hover {
+    background: rgba(0,212,255,0.15);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+
+  /* INPUT AREA */
+  .input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(0deg, var(--bg) 60%, transparent);
+    padding: 16px;
+    z-index: 50;
+  }
+
+  .input-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    padding: 8px 8px 8px 18px;
+    transition: border-color 0.2s;
+  }
+
+  .input-inner:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(233,69,96,0.15);
+  }
+
+  #userInput {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  #userInput::placeholder { color: var(--muted); }
+
+  .send-btn {
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    border: none;
+    border-radius: 18px;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:hover { transform: scale(1.1); }
+  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* LOADING DOTS */
+  .typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 8px 0;
+  }
+
+  .typing-dots span {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.4; }
+    40% { transform: scale(1.2); opacity: 1; }
+  }
+
+  /* BADGE */
+  .badge-pop {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 4px 2px;
+  }
+
+  /* NAME PROMPT */
+  .name-prompt {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .name-prompt h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    background: linear-gradient(90deg, var(--accent), var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+
+  .name-input-wrap {
+    display: flex;
+    gap: 10px;
+    max-width: 400px;
+    margin: 20px auto;
+  }
+
+  .name-input {
+    flex: 1;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 18px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    outline: none;
+  }
+
+  .name-input:focus { border-color: var(--cyan); }
+
+  .name-go-btn {
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    border: none;
+    border-radius: 16px;
+    padding: 12px 24px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .name-go-btn:hover { transform: scale(1.05); }
+
+  .emoji-row {
+    font-size: 2.5rem;
+    letter-spacing: 8px;
+    margin: 16px 0;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  strong { color: var(--gold); }
+  em { color: var(--cyan); font-style: normal; font-weight: 700; }
+  code {
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 6px;
+    padding: 1px 6px;
+    font-family: monospace;
+    color: var(--cyan);
+    font-size: 0.88em;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+
+  /* MUTE BUTTON */
+  .mute-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .mute-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .mute-btn.muted { border-color: var(--accent); color: var(--accent); }
+
+  /* SOUND RIPPLE */
+  @keyframes ripple {
+    0% { box-shadow: 0 0 0 0 rgba(233,69,96,0.5); }
+    70% { box-shadow: 0 0 0 14px rgba(233,69,96,0); }
+    100% { box-shadow: 0 0 0 0 rgba(233,69,96,0); }
+  }
+  .sound-ripple { animation: ripple 0.6s ease-out; }
+
+  @keyframes rippleGold {
+    0% { box-shadow: 0 0 0 0 rgba(255,215,0,0.6); }
+    70% { box-shadow: 0 0 0 18px rgba(255,215,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+  }
+  .sound-ripple-gold { animation: rippleGold 0.8s ease-out; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .stats-bar { gap: 8px; }
+    .stat-chip { padding: 3px 8px; font-size: 0.73rem; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .bubble { max-width: 90%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">🎮 GrammarMaster AI</div>
+  <div class="stats-bar">
+    <div class="stat-chip xp">⭐ <span id="xpDisplay">0</span> XP</div>
+    <div class="stat-chip level">🏆 <span id="levelDisplay">Grammar Rookie</span></div>
+    <div class="stat-chip streak">🔥 <span id="streakDisplay">0</span> days</div>
+    <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Toggle Sound">🔊 Sound</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- NAME PROMPT -->
+  <div id="nameScreen" class="name-prompt">
+    <div class="emoji-row">📚🎮✨🏆🚀</div>
+    <h2>Welcome to GrammarMaster AI!</h2>
+    <p style="color:var(--muted); font-size:0.95rem; max-width:420px; margin:0 auto;">
+      Your ultimate gamified grammar coach, powered by the <strong style="color:var(--cyan)">British Council English Grammar Guide</strong>. Crush SPM & PT3 while earning XP! 🔥
+    </p>
+    <div class="name-input-wrap">
+      <input class="name-input" id="nameInput" placeholder="Enter your name, future champion..." maxlength="30" />
+      <button class="name-go-btn" onclick="startSession()">Let's Go! 🚀</button>
+    </div>
+    <p style="color:var(--muted); font-size:0.8rem;">Press Enter or click the button ↑</p>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chatScreen" style="display:none;">
+    <div class="chat-container" id="chatContainer"></div>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="input-area" id="inputArea" style="display:none;">
+  <div class="input-inner">
+    <input type="text" id="userInput" placeholder="Type a number, ask a question, or say anything... 💬" maxlength="500" />
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// 🔊 SOUND ENGINE (Web Audio API — no files needed)
+// ═══════════════════════════════════════════════
+let audioCtx = null;
+let isMuted = false;
+
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  const btn = document.getElementById('muteBtn');
+  btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound';
+  btn.classList.toggle('muted', isMuted);
+}
+
+// ── Utility: play a single tone ──────────────────
+function tone(freq, type, startTime, duration, gain, ctx, destination) {
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, startTime);
+  g.gain.setValueAtTime(gain, startTime);
+  g.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  osc.connect(g);
+  g.connect(destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.01);
+}
+
+// ── 1. CORRECT ANSWER: cheerful ding-ding-ding ──
+function playCorrect() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.4;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  const notes = [523, 659, 784, 1047];
+  notes.forEach((f, i) => tone(f, 'sine', t + i * 0.12, 0.35, 0.5, ctx, master));
+  // sparkle layer
+  [1319, 1568].forEach((f, i) => tone(f, 'sine', t + 0.5 + i * 0.1, 0.2, 0.3, ctx, master));
+}
+
+// ── 2. WRONG ANSWER: buzzer ──────────────────────
+function playWrong() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.35;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  tone(180, 'sawtooth', t, 0.15, 0.5, ctx, master);
+  tone(150, 'sawtooth', t + 0.15, 0.15, 0.5, ctx, master);
+  tone(120, 'sawtooth', t + 0.30, 0.25, 0.5, ctx, master);
+}
+
+// ── 3. XP GAIN: quick coin ping ─────────────────
+function playXP() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.3;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  tone(880, 'sine', t, 0.08, 0.5, ctx, master);
+  tone(1047, 'sine', t + 0.08, 0.08, 0.5, ctx, master);
+  tone(1319, 'sine', t + 0.16, 0.12, 0.5, ctx, master);
+}
+
+// ── 4. LEVEL UP: epic fanfare ────────────────────
+function playLevelUp() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.45;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  // Rising triumphant melody
+  const melody = [523,659,784,659,784,1047,1319];
+  melody.forEach((f, i) => tone(f, 'square', t + i * 0.1, 0.18, 0.4, ctx, master));
+  // Bass foundation
+  [261, 329, 392, 523].forEach((f, i) => tone(f, 'triangle', t + i * 0.2, 0.3, 0.3, ctx, master));
+  // Final big chord
+  [523,659,784,1047].forEach(f => tone(f, 'sine', t + 0.75, 0.6, 0.35, ctx, master));
+}
+
+// ── 5. STREAK: fire crackle + shimmer ───────────
+function playStreak() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.35;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  // Ascending shimmer
+  [440,554,659,880,1047,1319].forEach((f, i) => tone(f, 'sine', t + i * 0.08, 0.15, 0.4, ctx, master));
+  // Noise crackle
+  const buf = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.12;
+  const noise = ctx.createBufferSource();
+  const nGain = ctx.createGain();
+  nGain.gain.setValueAtTime(0.15, t);
+  nGain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+  noise.buffer = buf;
+  noise.connect(nGain);
+  nGain.connect(master);
+  noise.start(t);
+  noise.stop(t + 0.3);
+}
+
+// ── 6. MESSAGE SEND: soft click ─────────────────
+function playSend() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.2;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  tone(600, 'sine', t, 0.06, 0.5, ctx, master);
+  tone(400, 'sine', t + 0.05, 0.06, 0.3, ctx, master);
+}
+
+// ── 7. AI RESPONSE: subtle notification ─────────
+function playReceive() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.22;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  tone(392, 'sine', t, 0.1, 0.4, ctx, master);
+  tone(523, 'sine', t + 0.1, 0.14, 0.4, ctx, master);
+}
+
+// ── 8. WELCOME JINGLE: game-start theme ─────────
+function playWelcome() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.38;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  const theme = [261,329,392,523,392,440,523,659,784];
+  theme.forEach((f, i) => tone(f, 'sine', t + i * 0.13, 0.2, 0.45, ctx, master));
+  [196,247,294].forEach((f, i) => tone(f, 'triangle', t + i * 0.26, 0.35, 0.25, ctx, master));
+  // Finale sparkle
+  [1047,1319,1568].forEach((f, i) => tone(f, 'sine', t + 1.2 + i * 0.08, 0.15, 0.3, ctx, master));
+}
+
+// ── 9. QUIZ START: dramatic drum roll ───────────
+function playQuizStart() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.3;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  // Snare roll simulation
+  for (let i = 0; i < 8; i++) {
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let j = 0; j < d.length; j++) d[j] = (Math.random() * 2 - 1);
+    const s = ctx.createBufferSource();
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.1 + i * 0.025, t + i * 0.07);
+    g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.07 + 0.05);
+    s.buffer = buf;
+    s.connect(g);
+    g.connect(master);
+    s.start(t + i * 0.07);
+    s.stop(t + i * 0.07 + 0.06);
+  }
+  // Final crash
+  tone(220, 'sawtooth', t + 0.6, 0.3, 0.5, ctx, master);
+  tone(110, 'triangle', t + 0.6, 0.4, 0.4, ctx, master);
+}
+
+// ── 10. BADGE UNLOCK: magical chime ─────────────
+function playBadge() {
+  if (isMuted) return;
+  const ctx = getCtx();
+  const master = ctx.createGain();
+  master.gain.value = 0.38;
+  master.connect(ctx.destination);
+  const t = ctx.currentTime;
+  // Magical ascending arpeggio
+  [523,659,784,988,1319,1568,2093].forEach((f, i) => {
+    tone(f, 'sine', t + i * 0.09, 0.3, 0.4, ctx, master);
+  });
+  // Echo shimmer
+  [659,784,988].forEach((f, i) => tone(f, 'sine', t + 0.7 + i * 0.07, 0.2, 0.2, ctx, master));
+}
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let state = {
+  name: '',
+  xp: 0,
+  streak: 1,
+  badges: [],
+  level: 'Grammar Rookie',
+  conversationHistory: []
+};
+
+const LEVELS = [
+  { name: 'Grammar Rookie', min: 0, max: 500 },
+  { name: 'Grammar Warrior', min: 501, max: 1500 },
+  { name: 'Grammar Champion', min: 1501, max: 3000 },
+  { name: 'Grammar Legend', min: 3001, max: Infinity },
+];
+
+// ═══════════════════════════════════════════════
+// SYSTEM PROMPT (Grammar knowledge from PDF)
+// ═══════════════════════════════════════════════
+function buildSystemPrompt() {
+  return `You are GrammarMaster AI — a super fun, gamified English grammar tutor for Malaysian secondary school students aged 13–17, preparing for SPM and PT3 exams.
+
+Your ONLY knowledge source is the British Council English Grammar Guide, which covers these 8 main chapters:
+1. PRONOUNS – personal, object, dummy subjects (it/there), you/they general, this/that/these/those, reflexive, reciprocal (each other/one another), indefinite (everybody/something), relative (who/which/that/whom), possessive pronouns
+2. DETERMINERS – interrogative (which/what), definite article (the), quantifiers, possessive adjectives (my/your/his/her/its/our/their)
+3. POSSESSIVES – possessive adjectives, possessive pronouns, whose questions
+4. ADJECTIVES – comparative/superlative, intensifiers, adjectives as intensifiers (absolute/complete/utter), adjective phrases, postmodifiers
+5. ADVERBIALS – how adverbials are made, position in sentence, adverbials of location/direction/distance, already/still/yet/no longer, adverbials of probability, manner/frequency/degree
+6. NOUNS – count vs uncount nouns, common problems with count/uncount
+7. VERBS – present simple, present perfect (formed with have + past participle, used for: things that have continued to present, recent past events), passive voice (be + past participle), tense usage (talking about present), verb patterns, do + -ing nouns
+8. CLAUSE, PHRASE AND SENTENCE – relative clauses (who/whom/which/that), that-clauses after verbs of thinking
+
+Student profile: Malaysian teen, learning English, wants to ace exams with 90+ scores. They may mix Malaysian casual language.
+
+YOUR PERSONALITY:
+- Super energetic, like a cool Malaysian teacher who's also a gamer
+- Use words like "legend", "epic", "mantap", "boss move", "lah", "eh"  
+- Short paragraphs, lots of emojis
+- Encouraging: every attempt gets praise + XP points
+
+XP SYSTEM (always announce XP earned):
+- Correct answer: +50 XP 🎉 DING DING DING!
+- Wrong answer: +20 XP ❌ Buzz! Nice try!
+- Completed lesson: +100 XP
+- Completed quiz: +200 XP
+
+LEVELS (track in conversation):
+- Grammar Rookie (0–500 XP)
+- Grammar Warrior (501–1500 XP)  
+- Grammar Champion (1501–3000 XP)
+- Grammar Legend (3000+ XP)
+
+MENU OPTIONS (when user types a number):
+[1] Browse & Learn Concepts → List all 8 chapters, ask which to explore
+[2] Interactive Lessons → Pick a chapter, teach it step by step with examples
+[3] Practice Zone → Generate 3–5 MCQ/fill-blank questions on a chosen topic. Use SPM/PT3 style
+[4] Quiz Arena → 5-question timed quiz (tell them to answer quickly). Give score at end
+[5] Writing Lab → Give a writing prompt, analyse their writing for grammar mistakes
+[6] Ask Any Question → Answer any grammar question from the book
+[7] My Progress → Show their XP, level, streak, badges earned
+[8] SPM/Exam Prep → Tips on high-yield grammar topics for Paper 1 & 2
+[9] Quick Formulas → Show grammar formulas/tables (e.g., tense tables, pronoun charts)
+[10] Achievements → List badges they can earn and which ones they've got
+
+QUESTION FORMATS you use:
+- MCQ: "Which is correct? A) ... B) ... C) ... D) ..."
+- Error correction: "Find and fix the error: ..."
+- Fill in the blank: "Choose the correct word: The dog hurt ___ (itself/himself/themselves)"
+- Sentence transformation: "Rewrite using passive voice: ..."
+
+IMPORTANT RULES:
+- Always stay within the British Council grammar book topics
+- If asked about something not in the book, say "That's not covered in our book, but the closest concept is..."
+- After every response, ALWAYS end with: "What's next, [student name]? 🎮 Type a number 1–10 or ask me anything!"
+- Keep responses fun, under 300 words unless doing a full lesson
+- Use **bold** for grammar terms, *italic* for examples
+- Format questions clearly and numbered
+
+Current student name: ${state.name}
+Current XP: ${state.xp}
+Current level: ${state.level}
+Badges earned: ${state.badges.length > 0 ? state.badges.join(', ') : 'None yet'}`;
+}
+
+// ═══════════════════════════════════════════════
+// START SESSION
+// ═══════════════════════════════════════════════
+function startSession() {
+  const nameVal = document.getElementById('nameInput').value.trim();
+  if (!nameVal) { 
+    document.getElementById('nameInput').style.borderColor = 'var(--accent)';
+    document.getElementById('nameInput').placeholder = 'Please enter your name first! 😊';
+    return; 
+  }
+  state.name = nameVal;
+  document.getElementById('nameScreen').style.display = 'none';
+  document.getElementById('chatScreen').style.display = 'block';
+  document.getElementById('inputArea').style.display = 'block';
+
+  // 🎵 Play welcome jingle when session starts
+  setTimeout(playWelcome, 200);
+  
+  showWelcome();
+}
+
+document.getElementById('nameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startSession();
+});
+
+document.getElementById('userInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) sendMessage();
+});
+
+// ═══════════════════════════════════════════════
+// WELCOME MESSAGE
+// ═══════════════════════════════════════════════
+function showWelcome() {
+  const welcomeHTML = `
+<h3>🎮 Welcome to GrammarMaster AI, ${state.name}!</h3>
+<p>Powered by the <strong>British Council English Grammar Guide</strong> 📚<br>
+Let's crush your SPM/PT3 and become a <em>Grammar Legend</em>! 🏆</p>
+<div class="divider"></div>
+<p style="color:var(--gold); font-weight:800; margin-bottom:8px;">⚡ EPIC DASHBOARD</p>
+
+<div class="menu-grid">
+  <button class="menu-btn" onclick="quickSend('1')"><span class="num">1</span>📖 Browse & Learn</button>
+  <button class="menu-btn" onclick="quickSend('2')"><span class="num">2</span>🎓 Interactive Lessons</button>
+  <button class="menu-btn" onclick="quickSend('3')"><span class="num">3</span>⚔️ Practice Zone</button>
+  <button class="menu-btn" onclick="quickSend('4')"><span class="num">4</span>🏟️ Quiz Arena</button>
+  <button class="menu-btn" onclick="quickSend('5')"><span class="num">5</span>✍️ Writing Lab</button>
+  <button class="menu-btn" onclick="quickSend('6')"><span class="num">6</span>❓ Ask Anything</button>
+  <button class="menu-btn" onclick="quickSend('7')"><span class="num">7</span>📊 My Progress</button>
+  <button class="menu-btn" onclick="quickSend('8')"><span class="num">8</span>🎯 SPM Exam Prep</button>
+  <button class="menu-btn" onclick="quickSend('9')"><span class="num">9</span>⚡ Quick Formulas</button>
+  <button class="menu-btn" onclick="quickSend('10')"><span class="num">10</span>🏅 Achievements</button>
+</div>
+
+<div class="divider"></div>
+<div style="display:flex; gap:12px; flex-wrap:wrap; font-size:0.82rem;">
+  <span>⭐ XP: <strong style="color:var(--gold)">0</strong></span>
+  <span>🏆 Level: <strong style="color:var(--cyan)">Grammar Rookie</strong></span>
+  <span>🔥 Streak: <strong style="color:#ff8c42">1 day</strong></span>
+  <span>🎖️ Badges: <strong>0 earned</strong></span>
+</div>
+<div class="progress-wrap" style="margin-top:10px;">
+  <div class="progress-label"><span>Progress to Grammar Warrior</span><span>0 / 500 XP</span></div>
+  <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+</div>
+<p style="margin-top:10px; color:var(--muted); font-size:0.82rem;">🔥 Ready to level up your English and crush SPM? Pick a number or ask me anything, ${state.name}! 💪</p>`;
+
+  addMessage('ai', welcomeHTML);
+}
+
+// ═══════════════════════════════════════════════
+// SEND MESSAGE
+// ═══════════════════════════════════════════════
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  
+  input.value = '';
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+
+  // 🔊 Send click
+  playSend();
+
+  addMessage('user', msg);
+  
+  state.conversationHistory.push({ role: 'user', content: msg });
+
+  // 🔊 Quiz start drum roll when they pick Quiz Arena
+  if (msg.trim() === '4' || msg.toLowerCase().includes('quiz')) {
+    setTimeout(playQuizStart, 300);
+  }
+
+  const typingId = addTyping();
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: buildSystemPrompt(),
+        messages: state.conversationHistory
+      })
+    });
+
+    const data = await response.json();
+    removeTyping(typingId);
+
+    if (data.content && data.content[0]) {
+      const aiText = data.content[0].text;
+      state.conversationHistory.push({ role: 'assistant', content: aiText });
+      
+      // 🔊 Detect and play sounds based on AI response
+      triggerSounds(aiText);
+      
+      // Award XP
+      parseAndAwardXP(aiText, msg);
+      
+      addMessage('ai', formatAIResponse(aiText));
+    } else {
+      addMessage('ai', '❌ Oops! Something went wrong. Try again lah! 😅');
+    }
+  } catch (err) {
+    removeTyping(typingId);
+    addMessage('ai', '⚠️ Connection error! Check your internet and try again, ' + state.name + '!');
+  }
+
+  btn.disabled = false;
+  input.focus();
+  scrollToBottom();
+}
+
+// ═══════════════════════════════════════════════
+// 🔊 SOUND TRIGGER ENGINE
+// ═══════════════════════════════════════════════
+function triggerSounds(aiText) {
+  const lc = aiText.toLowerCase();
+
+  // Priority 1: Level up (biggest moment)
+  if (lc.includes('level up') || lc.includes('grammar warrior') || lc.includes('grammar champion') || lc.includes('grammar legend')) {
+    setTimeout(playLevelUp, 100);
+    return;
+  }
+
+  // Priority 2: Badge unlock
+  if (lc.includes('badge') && (lc.includes('unlock') || lc.includes('earned') || lc.includes('you got'))) {
+    setTimeout(playBadge, 100);
+    return;
+  }
+
+  // Priority 3: Correct answer
+  if (lc.includes('ding ding ding') || lc.includes('correct!') || lc.includes('well done') || lc.includes('amazing') || lc.includes('perfect') || lc.includes('spot on')) {
+    setTimeout(playCorrect, 100);
+    setTimeout(playXP, 500);
+    return;
+  }
+
+  // Priority 4: Wrong answer
+  if (lc.includes('buzz!') || lc.includes('nice try') || lc.includes('not quite') || lc.includes('almost!') || lc.includes('oops')) {
+    setTimeout(playWrong, 100);
+    setTimeout(playXP, 450);
+    return;
+  }
+
+  // Priority 5: XP earned (general)
+  if (lc.includes('+50 xp') || lc.includes('+100 xp') || lc.includes('+200 xp') || lc.includes('xp earned')) {
+    setTimeout(playXP, 200);
+    return;
+  }
+
+  // Priority 6: Streak
+  if (lc.includes('streak') || lc.includes('🔥')) {
+    setTimeout(playStreak, 100);
+    return;
+  }
+
+  // Default: soft receive ping for all other AI messages
+  setTimeout(playReceive, 80);
+}
+
+function quickSend(text) {
+  document.getElementById('userInput').value = text;
+  sendMessage();
+}
+
+// ═══════════════════════════════════════════════
+// XP & LEVEL SYSTEM
+// ═══════════════════════════════════════════════
+function parseAndAwardXP(aiText, userMsg) {
+  let xpGained = 0;
+  
+  if (aiText.includes('DING DING DING') || aiText.includes('Correct!') || aiText.includes('correct!') || aiText.includes('Well done') || aiText.includes('Amazing')) {
+    xpGained = 50;
+  } else if (aiText.includes('Buzz!') || aiText.includes('Nice try') || aiText.includes('not quite') || aiText.includes('Almost!')) {
+    xpGained = 20;
+  } else if (aiText.includes('+100 XP') || aiText.includes('lesson complete') || aiText.includes('Lesson complete')) {
+    xpGained = 100;
+  }
+
+  if (xpGained > 0) {
+    state.xp += xpGained;
+    updateStatsDisplay();
+    checkLevelUp();
+  }
+}
+
+function updateStatsDisplay() {
+  document.getElementById('xpDisplay').textContent = state.xp;
+  document.getElementById('streakDisplay').textContent = state.streak;
+  document.getElementById('levelDisplay').textContent = state.level;
+}
+
+function checkLevelUp() {
+  const prev = state.level;
+  for (const lv of LEVELS) {
+    if (state.xp >= lv.min && state.xp <= lv.max) {
+      if (state.level !== lv.name) {
+        state.level = lv.name;
+        if (prev !== lv.name) {
+          // 🔊 Level up fanfare triggered via triggerSounds when AI responds
+          setTimeout(() => {
+            playLevelUp();
+            addMessage('ai', `🚀 LEVEL UP! <em>*epic fanfare* 🎺🎺🎺</em><br><strong>You are now ${lv.name}!</strong> Mantap gila lah! 🏆<div class="xp-burst">🎮 NEW LEVEL UNLOCKED!</div>`);
+          }, 500);
+        }
+      }
+      break;
+    }
+  }
+  updateStatsDisplay();
+}
+
+// ═══════════════════════════════════════════════
+// FORMAT AI RESPONSE
+// ═══════════════════════════════════════════════
+function formatAIResponse(text) {
+  let html = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>')
+    .replace(/#{1,3} (.*?)(<br>|$)/g, '<h3>$1</h3>')
+    .replace(/^(\d+)\. /gm, '<strong>$1.</strong> ')
+    .replace(/^[•\-] /gm, '• ');
+
+  html = html.replace(/(\+\d+ XP)/g, '<span class="xp-burst">$1</span>');
+  
+  return html;
+}
+
+// ═══════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════
+function addMessage(role, content) {
+  const container = document.getElementById('chatContainer');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  
+  const initial = role === 'ai' ? '🤖' : state.name.charAt(0).toUpperCase();
+  const avClass = role === 'ai' ? 'ai' : 'user-av';
+  
+  div.innerHTML = `
+    <div class="avatar ${avClass}">${initial}</div>
+    <div class="bubble">${content}</div>
+  `;
+  
+  container.appendChild(div);
+  scrollToBottom();
+  return div;
+}
+
+function addTyping() {
+  const container = document.getElementById('chatContainer');
+  const div = document.createElement('div');
+  div.className = 'message ai';
+  div.id = 'typing-indicator';
+  div.innerHTML = `
+    <div class="avatar ai">🤖</div>
+    <div class="bubble">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>
+  `;
+  container.appendChild(div);
+  scrollToBottom();
+  return 'typing-indicator';
+}
+
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+function scrollToBottom() {
+  setTimeout(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }, 100);
+}
+</script>
+</body>
+</html>
