@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Grammar Apps">
+<meta name="theme-color" content="#e94560">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Grammar Learning Apps — Xplore Mindz</title>
 <style>
@@ -362,5 +371,75 @@ body::before {
   </div>
 
 </div>
+
+<script>
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js')
+      .then(function(reg) { console.log('SW registered:', reg.scope); })
+      .catch(function(err) { console.log('SW failed:', err); });
+  });
+}
+
+// PWA Install Banner
+var deferredPrompt;
+var installBanner = null;
+
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // Create install banner
+  installBanner = document.createElement('div');
+  installBanner.id = 'installBanner';
+  installBanner.style.cssText = [
+    'position:fixed', 'bottom:20px', 'left:50%', 'transform:translateX(-50%)',
+    'background:linear-gradient(135deg,#e94560,#a855f7)',
+    'color:white', 'padding:14px 24px', 'border-radius:50px',
+    'font-family:Nunito,sans-serif', 'font-size:0.9rem', 'font-weight:800',
+    'cursor:pointer', 'z-index:9999', 'box-shadow:0 8px 30px rgba(233,69,96,0.5)',
+    'display:flex', 'align-items:center', 'gap:10px',
+    'animation:installPop 0.5s cubic-bezier(.34,1.6,.64,1)',
+    'white-space:nowrap'
+  ].join(';');
+  installBanner.innerHTML = '📲 Install App on your phone!';
+  installBanner.onclick = function() {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(result) {
+      if (result.outcome === 'accepted') {
+        installBanner.remove();
+      }
+      deferredPrompt = null;
+    });
+  };
+
+  // Add close button
+  var closeBtn = document.createElement('span');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'margin-left:8px;opacity:0.7;font-size:0.8rem;';
+  closeBtn.onclick = function(e) {
+    e.stopPropagation();
+    installBanner.remove();
+  };
+  installBanner.appendChild(closeBtn);
+
+  document.body.appendChild(installBanner);
+});
+
+// Already installed
+window.addEventListener('appinstalled', function() {
+  if (installBanner) installBanner.remove();
+  console.log('App installed!');
+});
+</script>
+
+<style>
+@keyframes installPop {
+  from { transform: translateX(-50%) translateY(80px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+</style>
+
 </body>
 </html>

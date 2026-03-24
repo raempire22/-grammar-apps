@@ -1,0 +1,50 @@
+{
+  "name": "Xplore Mindz Grammar",
+  "short_name": "Grammar Apps",
+  "description": "AI-powered grammar learning apps for Malaysian students aged 4-17",
+  "start_url": "/~grammar-apps/",
+  "scope": "/~grammar-apps/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0d1a",
+  "theme_color": "#e94560",
+  "lang": "en",
+  "categories": ["education"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "GrammarMaster AI",
+      "short_name": "SPM",
+      "description": "For secondary school students aged 13-17",
+      "url": "/~grammar-apps/grammarmaster_ai.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Grammar Adventure Buddy",
+      "short_name": "Primary",
+      "description": "For primary school kids aged 7-12",
+      "url": "/~grammar-apps/grammar_adventure_buddy.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Little Grammar Friend",
+      "short_name": "Preschool",
+      "description": "For preschool children aged 4-7",
+      "url": "/~grammar-apps/little_grammar_friend.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
